@@ -219,5 +219,6 @@ By simplifying the data before modeling, we are more likely to yield positive re
 ├── Scratch Work
 ├── .gitignore
 ├── SyriaTel_Churn_Final_Notebook.ipynb
-└── README.md
+├── README.md
+└── Know_Your_Customer_Presentation.pdf
 ```
