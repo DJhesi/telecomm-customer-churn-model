@@ -77,7 +77,7 @@ For our 3rd model we took a manual approach and redefined the DataFrame criteria
 
 We decided to only include highly correlated variables since we had previously stated there were some features which had extremely high correlations with eachother. For this model we were left with only the features seen below in a heatmap no longer demonstrating any co-linearity.
 
-<p align="center"><img src="Images/Model 3 Heatmap.jpeg"/></p>
+<p align="center"><img src="Images/Model 3 Heatmap.png"/></p>
 
 Since tranforming column names applies generally to the dataframe, we did not have to repeat this as it was already complete as the first pre-processing step.
 
@@ -112,7 +112,7 @@ After applying `SMOTE` with an even 0:1 split, we cross validate our model with 
 
 **Finetuning `C` with Cross Validation:** Creating a loop to test out `C` values `[0.0001, 0.001, 0.01, 0.1, 1]` we find that the lowest `C` yields the highest `recall`. 
 
-Our optimized results after finetuning the `C` look pretty good, though around the same as before optimization. Once we attempt to simplify some more, we will want to look at other scores such as accuracy and precision to make sure our results are balanced enough for the business problem at hand.
+Our optimized results after finetuning the `C` look pretty good, though slightly less than before optimizing `C`. Once we attempt to simplify some more, we will want to look at other scores such as accuracy and precision to make sure our results are balanced enough for the business problem at hand.
 
 <p align="center"><img src="Images/1st Model CV Optimized.png"></p>
 
@@ -125,11 +125,11 @@ We will use the default threshold to start and identify which features meet thre
 
 **Finetuning `C` with Cross Validation:** Just like our Logreg L1 model and using the same test `C` values, the Logreg Select model does best with smaller `C` values, so we will want to use the smallest value with our optimized model.
 
-Our Logistic Select model did pretty well! It performed slightly better at recall than our first Logtistic L1 model.
+Our Logistic Select model did pretty well though It performed around the same as our first Logtistic model after optimization.
 
 <p align="center"><img src="Images/2nd Model CV Optimized.png"></p>
 
-<p align="center"><img src="Images/Log L1 vs Log Select.jpeg"></p>
+<p align="center"><img src="Images/Log L1 vs Log Select.png"></p>
 
 ### 3rd Model
 
@@ -143,29 +143,48 @@ Here we redefined our DataFrame:
 
 **Finetuning `C` with Cross Validation:** Using a different set of tests `C` values `[0.00015, 0.0002, 0.0015, 0.002, .015]` , the smallest `C` values gives us the best results. We will again, use the smallest value within our optimized results.
 
-We get an extremely high recall score after optimizing! We will definitely want to make sure we balance accuracy within our decision making process. All in all, it seems like our manual feature selection yields the best recall.
-
-It is also great to see that our bias and variance are balanced as our train and validation performance on all models is mostly even.
+We get a pretty good recall score after optimizing! We will definitely want to make sure we balance accuracy within our decision making process. All in all, it seems like our manual feature selection yields the best recall.
 
 <p align="center"><img src="Images/3rd Model CV Optimized.png"></p>
 
-### Compare Optimized Logistic Models
+### Compare Optimized Logistic Models on Train Data
 
 Comparing confusion matrices of all 3 `LogisticRegression` models, our most recent Logistic Reduced model does best at predicting True Positives (customers going to churn) and reducing False Negatives (customers appearing to be retained but who actually churn).
 
 This can provide valuable intervention insights to our stakeholders given a strategic approach to address the high amount False Positives (customers appearing to potentially churn but actually end up retained).
 
-<p align="center"><img src="Images/Logistic Model Comparison.jpeg"></p>
+<p align="center"><img src="Images/Logistic Model Comparison.png"></p>
 
 ### Run Final Models on Test
 
-We now run our models with test data and evaluate each classification report associated. As expected, our 3rd Model produces the highest recall. As this is our primary focus for Phase 1 of this business initiative we will want to recommend deployment of this model and address the concerns regarding our lower precision and accuracy scores within our approach recommendations as well as next steps.
+We will now run our models with test data and evaluate each classification report associated. As expected, our 3rd Model produces the highest recall. 
+
+However, we can also clearly see that all of our `LogisticRegression` models are underfitting to our training data resulting in a higher recall score when running our test data. We may want to try to run a `DecisionTreeClassifier` to balance this detriment.
 
 <p align="center"><img src="Images/Classification Report.png"></p>
 
+### 4th Model
+
+As stated, we will now construct and run a `DecisionTreeClassifier` on the dataset defined in our most recent model. We will also call on `GridSearchCV` to help us find the best parameters for our decision tree to run and result in the best recall score. No other preparation is necessary as it was addressed when prepping our previous model.
+
+Our results look great! These recall scores are the highest we've seen, even after optimizing the other models. We are also not seeing any overfitting or underfitting since both train and test(validation) scores are balanced. Although, this was also the case with our other models so we have to run the test to be certain that this model doesn't pose the same issue.
+
+<p align="center"><img src="Images/Tree Score Summary.png"></p>
+
+**Run Final Model on Test:**
+
+To confirm that our train data is not underfitting we run the `DecisionTreeClassifier on our test data. 
+
+To confirm that our train data is not underfitting we now run the `DecisionTreeClassifier` on our test data. Our results look good! Our recall on the test is slighly lower than on the train but overall they look balanced. Our `DecisionTreeCassifier` model has outperformed all of our `LogisticRegression`
+
+<p align="center"><img src="Images/Tree Classification Report.png"></p>
+
+<p align="center"><img src="Images/Decision Tree.png"></p>
+
+
 ## Final Evaluation & Conclusion
 
-After careful consideration we are recommending to implement Model 3 with manual feature selection of highly correlated variables. This model provides the highest Recall or True Postive Rate and most closely satisfies the goals of <ins>_Phase 1_</ins> of this business initiative. Below we go into detail regarding this decision including additional recommendation on intervention approach.
+After becoming aware of the underfitting issues with our `LogisticRegression` and running a `DecisionTreeClassifier` it is clear that the latter is the clear choice for this <ins>_Phase 1_</ins> of the business initiative. This model provides the highest Recall or True Postive Rate and most closely satisfies the goals. Below we go into detail regarding this decision including additional recommendation on intervention approach.
 
 ### Recommendations:
 
@@ -187,8 +206,20 @@ To account for our recall-focused path, a variety of low touch to high touch eng
 
 **Data Limitation and Future Considerations:**
 
-When looking to optimize our results and produce the most accurate prediction of customers who are likely to churn, we find that it may be best to use a combination of classifier models to balance precision and recall. However, given the need to edit the training data, this posed an issue. 
+In <ins>_Phase 2_</ins> of the business initiative, when looking to optimize our results and produce the most accurate prediction of customers who are likely to churn, we find that it may be best to use a combination of classifier models to balance precision and recall. However, given the need to edit the training data, this posed an issue.
 
-In <ins>_Phase 2_</ins>, we would recommend gathering additional data to account for class imbalance and revising which feature hold importance in relation to churn. 
+We would also recommend gathering additional data to account for class imbalance and revising which feature hold importance in relation to churn. Obtaining a larger dataset will also help resolve the underfitting issues we saw in our `LogisticRegression` models.
 
 By simplifying the data before modeling, we are more likely to yield positive results and open up options to combine models using the same training data for a more balanced learning mechanism.
+
+
+## Repository Structure
+
+```
+├── Data
+├── Images
+├── .gitignore
+├── Know Your Customer.pdf
+├── SyriaTel_Churn_Model.ipynb
+└── README.md
+```
