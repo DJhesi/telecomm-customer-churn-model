@@ -169,17 +169,15 @@ As stated, we will now construct and run a `DecisionTreeClassifier` on the datas
 
 Our results look great! These recall scores are the highest we've seen, even after optimizing the other models. We are also not seeing any overfitting or underfitting since both train and test(validation) scores are balanced. Although, this was also the case with our other models so we have to run the test to be certain that this model doesn't pose the same issue.
 
-<p align="center"><img src="Images/Tree Score Summary.png"></p>
+<p align="center"><img src="Images/Tree_Score_Summary.png"></p>
 
 **Run Final Model on Test:**
 
-To confirm that our train data is not underfitting we run the `DecisionTreeClassifier on our test data. 
-
 To confirm that our train data is not underfitting we now run the `DecisionTreeClassifier` on our test data. Our results look good! Our recall on the test is slighly lower than on the train but overall they look balanced. Our `DecisionTreeCassifier` model has outperformed all of our `LogisticRegression`
 
-<p align="center"><img src="Images/Tree Classification Report.png"></p>
+<p align="center"><img src="Images/Tree_Classification_Report.png"></p>
 
-<p align="center"><img src="Images/Decision Tree.png"></p>
+<p align="center"><img src="Images/Decision_Tree.png"></p>
 
 
 ## Final Evaluation & Conclusion
